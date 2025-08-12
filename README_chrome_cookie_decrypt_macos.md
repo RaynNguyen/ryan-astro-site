@@ -1,6 +1,6 @@
 ## macOS Chrome Cookie Decryptor (Python)
 
-Advanced script to decrypt macOS Google Chrome/Chromium cookies using the profile's Cookies DB and the system Local State file.
+Advanced script and GUI to decrypt macOS Google Chrome/Chromium cookies using the profile's Cookies DB and the system Local State file.
 
 ### Install
 
@@ -10,7 +10,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Usage
+### CLI Usage
 
 - Ensure Chrome is closed to avoid DB locks
 - Defaults to Chrome `Default` profile
@@ -35,6 +35,23 @@ Options:
 - `--keychain-service`: override Keychain service name (default tries "Chrome Safe Storage" and "Chromium Safe Storage")
 - `--keychain-account`: override Keychain account (default tries "Chrome" and "Chromium")
 
+### GUI Usage
+
+Run the GUI:
+
+```bash
+python3 chrome_cookie_decrypt_macos_gui.py
+```
+
+Features:
+- Select `Local State` and `Cookies` files manually via file pickers
+- Choose browser (`chrome`, `chrome-canary`, `chromium`) and profile name
+- Filters: domain substring, cookie name substring
+- Advanced options: override Keychain service/account
+- Output formats: JSON or TSV; export to file
+- Table view with host, name, value, path, expiry, flags; copy selected value to clipboard
+- Options to include expired cookies and to show only AES-GCM (`v10`/`v11`) items
+
 ### How it works
 - Derives the legacy AES-CBC key from macOS Keychain (PBKDF2-HMAC-SHA1, salt=`saltysalt`, iterations=1003)
 - Reads `Local State` to get `os_crypt.encrypted_key`
@@ -44,6 +61,7 @@ Options:
   - otherwise: legacy AES-CBC with IV=16 spaces
 
 ### Notes
-- This script is intended for macOS (`sys.platform == 'darwin'`).
+- This tool is intended for macOS (`sys.platform == 'darwin'`).
+- Close Chrome before running to avoid DB locks.
 - Accessing Keychain may prompt for authentication or require the login keychain to be unlocked.
 - Use responsibly and only on systems you own or have permission to access.
